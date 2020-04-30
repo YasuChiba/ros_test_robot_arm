@@ -72,6 +72,9 @@ def main():
         args.roll,
         args.pitch,
         args.yaw))
+    orientation = Quaternion(0,0.707106,0,0.707106)
+
+
     pose = Pose(Point(args.x, args.y, args.z), orientation)
     rospy.loginfo('[move_to_pose] Moving arm to ' + str(pose))
     arm.set_pose_target(pose)

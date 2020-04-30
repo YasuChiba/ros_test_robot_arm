@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <arg name="model" default="$(find my_robo_description)/urdf/my_robo.urdf.xacro" />
+  <param name="robot_description" command="xacro $(arg model)" />
+  <!---->
+  <!---->
+  <!---->
+  <!--  RVIZ and GAZEBO  -->
+  <!---->
+  <arg name="rvizconfig" default="$(find my_robo_launch)/config/simulator.rviz" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" />
+  <!--  gazebo   -->
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="worlds/willowgarage.world"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="headless" value="$(arg headless)"/>
+    <arg name="debug" value="$(arg debug)"/>
+  </include>
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-urdf -model robot -param robot_description"/>
+  <!---->
+  <!---->
+  <!---->
+  <!-- arm -->
+  <rosparam file="$(find my_robo_launch)/config/crane_plus.yaml" command="load"/>
+  <!--  -->
+  <rosparam command="load" file="$(find my_robo_launch)/config/joints.yaml" ns="/my_robo" />
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" 
+    args="/my_robo/joint_state_controller 
+          crane_plus 
+          crane_plus_finger" />
+  <node name="crane_plus_gripper"
+    pkg="crane_plus_gripper"
+    type="gripper_controller.py"
+    output="screen"
+    >
+    <param name="servo_namespace" value="/crane_plus_finger"/>
+    <param name="is_simulated" value="true"/>
+  </node>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+</launch>

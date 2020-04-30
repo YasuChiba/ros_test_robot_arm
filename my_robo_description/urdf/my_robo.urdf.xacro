@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<robot name="my_robo"
+  xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:property name="M_PI" value="3.14159274"/>
+  <material name="blue">
+    <color rgba="0 0 0.8 1"/>
+  </material>
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+  <material name="gray">
+    <color rgba="0.5 0.5 0.5 1"/>
+  </material>
+  <material name="red">
+    <color rgba="1.0 0.0 0.0 1"/>
+  </material>
+  <material name="grey">
+    <color rgba="0.75 0.75 0.75 1.0"/>
+  </material>
+  <material name="black">
+    <color rgba="0.2 0.2 0.2 1.0"/>
+  </material>
+  <material name="aluminum">
+    <color rgba="0.5 0.5 0.5 1"/>
+  </material>
+  <xacro:macro name="cylinder_inertial" params="mass radius length">
+    <mass value="${mass}"/>
+    <inertia ixx="${((radius*radius)/4 + (length*length)/12)*mass}" ixy="0" ixz="0"
+			 iyy="${((radius*radius)/4 + (length*length)/12)*mass}" iyz="0"
+			 izz="${(mass*radius*radius)/2}" />
+  </xacro:macro>
+  <xacro:macro name="box_inertial" params="mass height width depth">
+    <mass value="${mass}"/>
+    <inertia ixx="${(mass*(width*width+depth*depth))/12}" ixy="0" ixz="0"
+			 iyy="${(mass*(height*height+depth*depth))/12}" iyz="0"
+			 izz="${(mass*(height*height+width*width))/12}" />
+  </xacro:macro>
+  <xacro:macro name="default_inertial" params="mass">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </xacro:macro>
+  <xacro:include filename="$(find my_robo_description)/urdf/arm/crane_plus.xacro"/>
+  <xacro:include filename="$(find my_robo_description)/urdf/camera/d435.urdf.xacro"/>
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <link name="world"/>
+  <joint name="fixed" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+  </joint>
+  <link name="base_link"/>
+  <link name="body_link">
+    <visual>
+      <geometry>
+        <box size="1 1 1" />
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <xacro:box_inertial mass="1.0"
+						   height="0.01" width="0.01" depth="0.01"/>
+    </inertial>
+  </link>
+  <joint name="base_link_body_link_joint" type="fixed">
+    <origin xyz="0 0 0.5" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="body_link" />
+  </joint>
+  <xacro:d435 parent="body_link" xyz="0.51 0 0.5"/>
+  <crane_plus parent="body_link"
+              servo_color="black" bracket_color="grey" gripper_color="black"
+              joints_vlimit="1.571"
+              pan_llimit="-2.617" pan_ulimit="2.617">
+    <origin xyz="0.45 0 0.51"/>
+  </crane_plus>
+  <xacro:crane_plus_trans/>
+  <!--  gazebo-->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"></plugin>
+  </gazebo>
+  <xacro:d435_gazebo/>
+</robot>

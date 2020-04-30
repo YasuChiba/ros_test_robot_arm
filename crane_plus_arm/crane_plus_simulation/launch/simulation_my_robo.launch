@@ -1,0 +1,10 @@
+<launch>
+  <node name="crane_plus_gripper"
+    pkg="crane_plus_gripper"
+    type="gripper_controller.py"
+    output="screen"
+    >
+    <param name="servo_namespace" value="/crane_plus_finger"/>
+    <param name="is_simulated" value="true"/>
+  </node>
+</launch>
