@@ -77,7 +77,12 @@
     <parent link="base_link"/>
     <child link="body_link" />
   </joint>
-  <xacro:d435 parent="body_link" xyz="0.51 0 0.5" isSimulator="$(arg isSimulator)"/>
+  <xacro:if value="$(arg isSimulator)">
+    <xacro:d435 parent="body_link" xyz="0.51 0 0.5" isSimulator="$(arg isSimulator)"/>
+  </xacro:if>
+  <xacro:if value="${'$(arg isSimulator)' == 'false'}">
+    <xacro:d435 parent="body_link" xyz="0.4 0 0.5" isSimulator="$(arg isSimulator)"/>
+  </xacro:if>
   <crane_plus parent="body_link"
               servo_color="black" bracket_color="grey" gripper_color="black"
               joints_vlimit="1.571"
