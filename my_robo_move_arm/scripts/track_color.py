@@ -69,7 +69,10 @@ class TrackColor:
     self.pub_detected_position_image = rospy.Publisher("/detected_position_image", Image, queue_size=1)
 
 
-    r = rospy.Rate(1)
+    self.arm = moveit_commander.MoveGroupCommander("arm")
+    self.arm.set_pose_reference_frame("base_link")
+
+    r = rospy.Rate(5)
     while not rospy.is_shutdown():
 
       self.do_something()
@@ -116,14 +119,19 @@ class TrackColor:
     #
     #
     #move arm
-    #moveit_commander.roscpp_initialize()
-    arm = moveit_commander.MoveGroupCommander("arm")
-    arm.set_pose_reference_frame("base_link")
     orientation = Quaternion(0,0.707106,0,0.707106)
     pose = Pose(p.point, orientation)
-    rospy.loginfo('[move_to_pose] Moving arm to ' + str(pose))
-    arm.set_pose_target(pose)
-    arm.go()
+    self.move_arm(pose)
+
+  
+  def move_arm(self, goal_pose):
+
+    self.arm.set_pose_target(goal_pose)
+    plan = self.arm.plan()
+    if plan.joint_trajectory.points: 
+      self.arm.execute(plan)
+
+
 
 
 

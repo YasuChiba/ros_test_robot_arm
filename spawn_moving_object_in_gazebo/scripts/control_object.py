@@ -26,17 +26,17 @@ class ControlObject:
     while not rospy.is_shutdown():
       direction = raw_input('w: forward, s: backward, a: left, d: right > ')
       if 'w' in direction:
-          self.currentPoint.z += 0.1
+          self.currentPoint.z += 0.02
       if 's' in direction:
-          self.currentPoint.z -= 0.1
+          self.currentPoint.z -= 0.02
       if 'a' in direction:
-          self.currentPoint.x -= 0.1
+          self.currentPoint.y -= 0.02
       if 'd' in direction:
-          self.currentPoint.x += 0.1
+          self.currentPoint.y += 0.02
       if 'r' in direction:
-          self.currentPoint.y += 0.1
+          self.currentPoint.x += 0.02
       if 'f' in direction:
-          self.currentPoint.y -= 0.1
+          self.currentPoint.x -= 0.02
       if 'q' in direction:
           break
 
