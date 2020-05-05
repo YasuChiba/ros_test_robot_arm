@@ -77,7 +77,7 @@
     <parent link="base_link"/>
     <child link="body_link" />
   </joint>
-  <xacro:d435 parent="body_link" xyz="0.51 0 0.5"/>
+  <xacro:d435 parent="body_link" xyz="0.51 0 0.5" isSimulator="$(arg isSimulator)"/>
   <crane_plus parent="body_link"
               servo_color="black" bracket_color="grey" gripper_color="black"
               joints_vlimit="1.571"
@@ -89,5 +89,7 @@
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"></plugin>
   </gazebo>
-  <xacro:d435_gazebo/>
+  <xacro:if value="$(arg isSimulator)">
+    <xacro:d435_gazebo/>
+  </xacro:if>
 </robot>

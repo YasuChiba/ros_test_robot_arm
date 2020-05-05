@@ -14,7 +14,7 @@ import tf
 import math
 
 import moveit_commander
-
+import rosparam
 
 
 from convert_depth_to_phys_coord import convert_depth_to_phys_coord_using_realsense
@@ -56,11 +56,13 @@ class TrackColor:
     self.depth_array = None
     self.cameraInfo = None
 
+    self.is_simulator = rosparam.get_param("/is_simulator") == "true"
+
     rospy.init_node('calc_coord_node')
 
-    rospy.Subscriber("/d435/image_raw", Image, self.image_listener)
-    rospy.Subscriber("/d435/depth/image_raw", Image, self.depth_image_listener)
-    rospy.Subscriber("/d435/camera_info", CameraInfo, self.cameraInfo_listener)
+    rospy.Subscriber("/d435/color/image_raw", Image, self.image_listener)
+    rospy.Subscriber("/d435/aligned_depth_to_color/image_raw", Image, self.depth_image_listener)
+    rospy.Subscriber("/d435/color/camera_info", CameraInfo, self.cameraInfo_listener)
 
     self.tf_listener = tf.TransformListener()
 
@@ -111,7 +113,8 @@ class TrackColor:
     p.point.x= X
     p.point.y = Y
     p.point.z = Z
-    p = self.tf_listener.transformPoint("base_link",p)
+    
+    p = self.tf_listener.transformPoint("base_link", p)
     marker_data.pose.position = p.point
     self.pub_position_marker.publish(marker_data)
 
@@ -151,8 +154,11 @@ class TrackColor:
           
           depth_image = self.bridge.imgmsg_to_cv2(data, 'passthrough')
           depth_array = np.array(depth_image, dtype=np.float32)
-          self.depth_array = depth_array
-          #self.depth_array = depth_array / 1000.0
+
+          if self.is_simulator:
+            self.depth_array = depth_array
+          else:
+            self.depth_array = depth_array / 1000.0
 
       except Exception as err:
           print(err)

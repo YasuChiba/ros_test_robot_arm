@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
-  <rosparam param="/is_simulator">true</rosparam>
+  <rosparam param="/is_simulator">false</rosparam>
   <arg name="model" default="$(find my_robo_description)/urdf/my_robo.urdf.xacro" />
-  <param name="robot_description" command="xacro $(arg model) isSimulator:=true" />
+  <param name="robot_description" command="xacro $(arg model) isSimulator:=false" />
   <!---->
   <!---->
   <!---->
@@ -28,6 +28,11 @@
         args="-urdf -model robot -param robot_description"/>
   <!---->
   <!---->
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+    <arg name="camera" value="d435"/>
+    <arg name="align_depth" value="true"/>
+    <arg name="enable_pointcloud" value="true"/>
+  </include>
   <!---->
   <!-- arm -->
   <rosparam file="$(find my_robo_launch)/config/crane_plus.yaml" command="load"/>

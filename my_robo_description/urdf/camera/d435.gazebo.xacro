@@ -21,12 +21,12 @@
           <baseline>0.2</baseline>
           <alwaysOn>true</alwaysOn>
           <updateRate>0.0</updateRate>
-          <imageTopicName>d435/image_raw</imageTopicName>
-          <cameraInfoTopicName>d435/camera_info</cameraInfoTopicName>
-          <depthImageTopicName>d435/depth/image_raw</depthImageTopicName>
+          <imageTopicName>d435/color/image_raw</imageTopicName>
+          <cameraInfoTopicName>d435/color/camera_info</cameraInfoTopicName>
+          <depthImageTopicName>d435/aligned_depth_to_color/image_raw</depthImageTopicName>
           <depthImageCameraInfoTopicName>d435/depth/camera_info</depthImageCameraInfoTopicName>
-          <pointCloudTopicName>d435/depth/points</pointCloudTopicName>
-          <frameName>d435_link_optical</frameName>
+          <pointCloudTopicName>d435/depth/color/points</pointCloudTopicName>
+          <frameName>d435_color_optical_frame</frameName>
           <pointCloudCutoff>0.01</pointCloudCutoff>
           <pointCloudCutoffMax>15.0</pointCloudCutoffMax>
           <distortionK1>0</distortionK1>
